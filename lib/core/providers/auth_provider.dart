@@ -79,8 +79,14 @@ class AuthNotifier extends StateNotifier<AuthFormState> {
     } on AuthException catch (e) {
       state = AuthFormState(error: e.message);
       return false;
-    } catch (_) {
-      state = const AuthFormState(error: 'An unexpected error occurred.');
+    } on PostgrestException catch (e) {
+      // Should not normally reach here after the service-level guard, but
+      // surface the real Supabase message if it does.
+      state = AuthFormState(error: e.message);
+      return false;
+    } catch (e) {
+      // Show the real error in debug mode so it's easy to diagnose.
+      state = AuthFormState(error: e.toString());
       return false;
     }
   }

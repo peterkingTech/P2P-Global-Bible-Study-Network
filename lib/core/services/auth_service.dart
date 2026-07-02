@@ -27,19 +27,29 @@ class AuthService {
     required String password,
     required String displayName,
   }) async {
+    // Step 1: Create the Supabase Auth account. This is the authoritative step —
+    // if it fails we throw so the caller can show the real AuthException message.
     final response = await _client.auth.signUp(
       email: email,
       password: password,
       data: {'display_name': displayName},
     );
 
+    // Step 2: Seed a profile row. This is best-effort — the auth account already
+    // exists at this point, so a DB failure here must NOT block registration.
+    // The profile can be created later on first login via an upsert or trigger.
     if (response.user != null) {
-      await _client.from(SupabaseService.usersTable).insert({
-        'id': response.user!.id,
-        'email': email,
-        'display_name': displayName,
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      try {
+        await _client.from(SupabaseService.usersTable).upsert({
+          'id': response.user!.id,
+          'email': email,
+          'display_name': displayName,
+          'created_at': DateTime.now().toIso8601String(),
+        }, onConflict: 'id');
+      } catch (_) {
+        // Profile seeding failed (table not yet created, RLS, etc.).
+        // Auth account exists — proceed. Profile setup screen will handle it.
+      }
     }
 
     return response;
