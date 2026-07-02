@@ -6,6 +6,7 @@ abstract final class Routes {
   static const login = '/login';
   static const register = '/register';
   static const verifyOtp = '/verify-otp';
+  static const contactForm = '/contact-form';
   static const profileSetup = '/profile-setup';
   static const treeCeremony = '/tree-ceremony';
 

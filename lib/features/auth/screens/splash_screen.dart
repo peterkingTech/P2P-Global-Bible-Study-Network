@@ -55,30 +55,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Vine logo placeholder — replace with Rive / SVG asset
-              Container(
-                width: 80.r,
-                height: 80.r,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.accentGreen.withOpacity(0.15),
-                  border: Border.all(
-                    color: AppColors.accentGreen.withOpacity(0.4),
-                    width: 1.5,
+              // P2P Official Logo
+              ClipOval(
+                child: Image.network(
+                  'https://omkqkasniakcnmfcwrvs.supabase.co/storage/v1/object/public/P2P%20Official%20Logo/P2P%20Official%20Logo.png',
+                  width: 96.r,
+                  height: 96.r,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 96.r,
+                    height: 96.r,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.accentGreen.withOpacity(0.15),
+                      border: Border.all(
+                        color: AppColors.accentGreen.withOpacity(0.4),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Icon(Icons.menu_book_outlined,
+                        color: AppColors.lightGreen, size: 40.sp),
                   ),
-                ),
-                child: Center(
-                  child: Text('🌿', style: TextStyle(fontSize: 36.sp)),
                 ),
               ),
               SizedBox(height: 20.h),
               Text(
-                'Vine & Branches',
+                'Peer-to-Peer Global\nBible Study Network',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.cream,
-                  letterSpacing: 0.5,
+                  letterSpacing: 0.3,
+                  height: 1.3,
                 ),
               ),
               SizedBox(height: 6.h),

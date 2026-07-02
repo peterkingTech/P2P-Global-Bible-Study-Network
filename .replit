@@ -24,13 +24,13 @@ args = "Flutter Web"
 name = "Flutter Web"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd /home/runner/workspace && flutter run -d web-server --web-port=8082 --web-hostname=0.0.0.0"
-waitForPort = 8082
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd /home/runner/workspace && flutter run -d web-server --web-port=8082 --web-hostname=0.0.0.0 --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+waitForPort = 8082
 
 [agent]
 stack = "PNPM_WORKSPACE"

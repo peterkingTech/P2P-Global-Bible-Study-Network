@@ -1,0 +1,584 @@
+You are now the Lead Flutter Architect, Senior Software Engineer, Senior Supabase Engineer, DevOps Engineer, UI/UX Engineer, QA Engineer, and Production Release Engineer.
+
+Your mission is to transform this entire project into a REAL production-ready application.
+
+DO NOT create mock data.
+
+DO NOT create demo code.
+
+DO NOT create placeholder screens.
+
+DO NOT leave TODO comments.
+
+DO NOT leave fake services.
+
+DO NOT generate sample users.
+
+DO NOT stop after finding issues.
+
+Actually repair them.
+
+=========================================================
+APPLICATION IDENTITY
+=========================================================
+
+Official Name:
+
+Peer-to-Peer Global Bible Study Network
+
+Everywhere this application currently says:
+
+Code Conversion Tool
+Code Converter
+Converter
+Template
+Starter
+Boilerplate
+Demo
+Sample
+v0
+Vercel
+
+Remove it.
+
+Replace it everywhere with:
+
+Peer-to-Peer Global Bible Study Network
+
+The application short name must be:
+
+P2P Global Bible Study Network
+
+Developer:
+
+AMEN TECH
+
+The application should feel like it was originally built for P2P Global Bible Study Network and never converted from another project.
+
+=========================================================
+OFFICIAL LOGO
+=========================================================
+
+Replace EVERY logo, icon, favicon, splash image and branding image with:
+
+https://omkqkasniakcnmfcwrvs.supabase.co/storage/v1/object/public/P2P%20Official%20Logo/P2P%20Official%20Logo.png
+
+Apply it to:
+
+Splash Screen
+
+App Bar
+
+Authentication
+
+Drawer
+
+Settings
+
+Browser favicon
+
+PWA
+
+Android launcher icon
+
+iOS app icon
+
+macOS
+
+Windows
+
+Linux
+
+Notifications
+
+OpenGraph image
+
+Manifest
+
+Metadata
+
+Everything.
+
+=========================================================
+REMOVE EVERY MOCK DATA
+=========================================================
+
+Search the ENTIRE project.
+
+Remove ALL:
+
+mock data
+
+fake users
+
+sample data
+
+dummy authentication
+
+hardcoded arrays
+
+temporary providers
+
+placeholder repositories
+
+fake services
+
+temporary APIs
+
+example lessons
+
+sample prayers
+
+sample trees
+
+example fruits
+
+local fake database
+
+temporary JSON
+
+development-only widgets
+
+demo cards
+
+fake statistics
+
+example dashboards
+
+placeholder images
+
+example notifications
+
+Everything must now use REAL production services.
+
+=========================================================
+REAL SUPABASE ONLY
+=========================================================
+
+Use ONLY Supabase.
+
+Verify:
+
+Authentication
+
+Profiles
+
+Storage
+
+Realtime
+
+Database
+
+RLS
+
+Storage buckets
+
+Image uploads
+
+Profile images
+
+Prayer uploads
+
+Lesson progress
+
+Tree progress
+
+Mentoring
+
+Realtime sessions
+
+Realtime notifications
+
+Realtime prayer
+
+Offline sync
+
+Environment variables
+
+Use the configured Supabase environment variables. Do not hard-code credentials.
+
+=========================================================
+MAKE EVERY FEATURE PRODUCTION READY
+=========================================================
+
+Every page must use real data.
+
+Home
+
+Learn
+
+Mentor
+
+Forest
+
+Upper Room
+
+Missions
+
+Settings
+
+Profile
+
+Authentication
+
+Notifications
+
+Prayer
+
+Tree
+
+Fruit
+
+Mega Harvest
+
+Everything.
+
+No placeholder widgets.
+
+No mock repositories.
+
+No fake state.
+
+=========================================================
+PROJECT AUDIT
+=========================================================
+
+Search the ENTIRE project.
+
+Repair:
+
+broken imports
+
+duplicate models
+
+duplicate providers
+
+unused widgets
+
+unused assets
+
+unused packages
+
+incorrect routing
+
+GoRouter issues
+
+Riverpod issues
+
+FutureBuilder issues
+
+StreamBuilder issues
+
+ProviderScope issues
+
+State issues
+
+null exceptions
+
+late initialization exceptions
+
+async errors
+
+Supabase initialization
+
+storage loading
+
+CORS
+
+Flutter web
+
+PWA
+
+Manifest
+
+pubspec
+
+assets
+
+fonts
+
+SVG loading
+
+theme
+
+dark mode
+
+navigation
+
+responsive layout
+
+desktop
+
+tablet
+
+mobile
+
+browser compatibility
+
+=========================================================
+APPLICATION STARTUP
+=========================================================
+
+Verify startup:
+
+main()
+
+↓
+
+Supabase.initialize()
+
+↓
+
+ProviderScope
+
+↓
+
+MaterialApp.router
+
+↓
+
+Splash
+
+↓
+
+Authentication
+
+↓
+
+Home
+
+Repair if incorrect.
+
+=========================================================
+ROUTES
+=========================================================
+
+Audit every route.
+
+/
+
+login
+
+register
+
+home
+
+learn
+
+mentor
+
+forest
+
+upper-room
+
+missions
+
+profile
+
+settings
+
+404
+
+Fix every broken navigation.
+
+=========================================================
+PRODUCTION OPTIMIZATION
+=========================================================
+
+Optimize:
+
+lazy loading
+
+memory usage
+
+image caching
+
+query performance
+
+Riverpod providers
+
+Supabase queries
+
+pagination
+
+offline cache
+
+retry logic
+
+network timeout
+
+loading states
+
+error handling
+
+analytics
+
+logging
+
+security
+
+=========================================================
+SECURITY
+=========================================================
+
+Verify:
+
+Supabase Auth
+
+JWT handling
+
+Secure Storage
+
+Environment variables
+
+RLS
+
+Input validation
+
+SQL injection prevention
+
+XSS prevention
+
+Rate limiting
+
+Permissions
+
+=========================================================
+FLUTTER ANALYSIS
+=========================================================
+
+Execute mentally and repair everything required for:
+
+flutter clean
+
+flutter pub get
+
+dart fix
+
+flutter analyze
+
+flutter build web
+
+flutter build apk
+
+flutter build appbundle
+
+Fix ALL compile errors.
+
+Fix ALL warnings where appropriate.
+
+=========================================================
+REPLIT DEPLOYMENT
+=========================================================
+
+Repair everything preventing deployment.
+
+Preview
+
+Run command
+
+Build command
+
+Environment variables
+
+Flutter web
+
+Assets
+
+Manifest
+
+Service Worker
+
+PWA
+
+Routing
+
+=========================================================
+QUALITY ASSURANCE
+=========================================================
+
+Check every screen.
+
+No overflow.
+
+No RenderFlex errors.
+
+No missing assets.
+
+No blank screens.
+
+No infinite loading.
+
+No runtime exceptions.
+
+No console errors.
+
+No placeholder content.
+
+=========================================================
+FINAL GOAL
+=========================================================
+
+Do not stop until the application behaves as a fully production-ready application.
+
+Requirements:
+
+✔ Zero mock data
+
+✔ Zero fake services
+
+✔ Zero placeholder content
+
+✔ Zero template branding
+
+✔ Zero demo code
+
+✔ Real Supabase integration
+
+✔ Production authentication
+
+✔ Production database
+
+✔ Production storage
+
+✔ Production realtime
+
+✔ Production routing
+
+✔ Production responsive UI
+
+✔ Successful Flutter Analyze
+
+✔ Successful Flutter Build
+
+✔ Successful Replit Preview
+
+✔ Browser title:
+Peer-to-Peer Global Bible Study Network
+
+✔ Application name:
+Peer-to-Peer Global Bible Study Network
+
+✔ Short application name:
+P2P Global Bible Study Network
+
+✔ Developer:
+AMEN TECH
+
+Finally produce a complete engineering report containing:
+
+1. Every file modified.
+
+2. Every mock service removed.
+
+3. Every placeholder removed.
+
+4. Every production service connected.
+
+5. Every dependency updated.
+
+6. Every bug repaired.
+
+7. Remaining warnings (if any).
+
+8. Confirmation that the project is production-ready and ready for deployment to Android, iOS, Web, Windows, macOS and Linux.

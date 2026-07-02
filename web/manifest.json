@@ -1,11 +1,11 @@
 {
-    "name": "p2p_global_bible_study",
-    "short_name": "p2p_global_bible_study",
+    "name": "Peer-to-Peer Global Bible Study Network",
+    "short_name": "P2P Global Bible Study Network",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0D1B0F",
+    "theme_color": "#1E6B3C",
+    "description": "Discipleship across nations — study Scripture together, grow in faith, and connect with believers worldwide. Developed by AMEN TECH.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

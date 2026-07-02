@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/prayer_model.dart';
@@ -40,19 +41,46 @@ final realtimePrayerWallProvider =
   final initial = await ref.read(prayerWallProvider.future);
   yield initial;
 
-  // Subscribe to new inserts
+  // Re-fetch and yield updated list on any insert/update
+  final controller = _PrayerStreamController();
   final channel = SupabaseService.client
       .channel(SupabaseService.prayerChannel)
       .onPostgresChanges(
         event: PostgresChangeEvent.insert,
         schema: 'public',
         table: SupabaseService.prayersTable,
-        callback: (_) => ref.invalidate(prayerWallProvider),
+        callback: (_) => controller.trigger(),
       )
     ..subscribe();
 
-  ref.onDispose(() => channel.unsubscribe());
+  ref.onDispose(() {
+    channel.unsubscribe();
+    controller.dispose();
+  });
+
+  await for (final _ in controller.stream) {
+    try {
+      final rows = await SupabaseService.client
+          .from(SupabaseService.prayersTable)
+          .select()
+          .eq('is_answered', false)
+          .order('created_at', ascending: false)
+          .limit(30);
+      final updated = (rows as List).map((r) => PrayerModel.fromMap(r)).toList();
+      yield updated;
+    } catch (_) {
+      // Keep last known good list on transient errors
+    }
+  }
 });
+
+/// Minimal helper that converts Postgres realtime callbacks into a stream.
+class _PrayerStreamController {
+  final _ctrl = StreamController<void>.broadcast();
+  Stream<void> get stream => _ctrl.stream;
+  void trigger() => _ctrl.add(null);
+  void dispose() => _ctrl.close();
+}
 
 // ── Prayer actions ─────────────────────────────────────────────────────────────
 

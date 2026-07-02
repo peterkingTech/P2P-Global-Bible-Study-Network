@@ -6,6 +6,7 @@ import '../features/auth/screens/splash_screen.dart';
 import '../features/auth/screens/onboarding_screen.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/auth/screens/register_screen.dart';
+import '../features/auth/screens/contact_form_screen.dart';
 import '../features/auth/screens/profile_setup_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/learn/screens/module_journey_screen.dart';
@@ -58,7 +59,7 @@ class _SupabaseAuthNotifier extends ChangeNotifier {
 
 // ── Public router instance ────────────────────────────────────────────────────
 
-/// Top-level GoRouter singleton consumed by [VineAndBranchesApp].
+/// Top-level GoRouter singleton consumed by [P2PBibleStudyApp].
 final GoRouter appRouter = _buildRouter();
 
 GoRouter _buildRouter() {
@@ -108,6 +109,10 @@ GoRouter _buildRouter() {
       GoRoute(
         path: Routes.verifyOtp,
         builder: (_, __) => const VerifyOtpScreen(),
+      ),
+      GoRoute(
+        path: Routes.contactForm,
+        builder: (_, __) => const ContactFormScreen(),
       ),
       GoRoute(
         path: Routes.profileSetup,

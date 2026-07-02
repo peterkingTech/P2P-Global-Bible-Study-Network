@@ -28,8 +28,12 @@ abstract final class AppConstants {
   ];
 
   // ── App info ───────────────────────────────────────────────────────────────
-  static const String appName = 'Vine & Branches';
+  static const String appName = 'Peer-to-Peer Global Bible Study Network';
+  static const String appShortName = 'P2P Global Bible Study Network';
+  static const String appDeveloper = 'AMEN TECH';
   static const String appTagline = 'Discipleship across nations';
+  static const String logoUrl =
+      'https://omkqkasniakcnmfcwrvs.supabase.co/storage/v1/object/public/P2P%20Official%20Logo/P2P%20Official%20Logo.png';
 
   // ── Growth stages ──────────────────────────────────────────────────────────
   static const int maxGrowthLevel = 5;

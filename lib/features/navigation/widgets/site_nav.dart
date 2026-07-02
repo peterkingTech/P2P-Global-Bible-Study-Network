@@ -51,26 +51,28 @@ class VineBranchesAppBar extends StatelessWidget implements PreferredSizeWidget 
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           child: Row(
             children: [
-              // Logo mark
-              Container(
-                width: 28.r,
-                height: 28.r,
-                decoration: BoxDecoration(
-                  color: AppColors.accentGreen.withOpacity(0.20),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.accentGreen.withOpacity(0.40),
+              // P2P Official Logo
+              ClipOval(
+                child: Image.network(
+                  'https://omkqkasniakcnmfcwrvs.supabase.co/storage/v1/object/public/P2P%20Official%20Logo/P2P%20Official%20Logo.png',
+                  width: 28.r,
+                  height: 28.r,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 28.r,
+                    height: 28.r,
+                    decoration: BoxDecoration(
+                      color: AppColors.accentGreen.withOpacity(0.20),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.menu_book_outlined,
+                        color: AppColors.lightGreen, size: 16.sp),
                   ),
-                ),
-                child: Icon(
-                  Icons.spa_outlined,
-                  color: AppColors.lightGreen,
-                  size: 16.sp,
                 ),
               ),
               SizedBox(width: 8.w),
               Text(
-                'Vine & Branches',
+                'P2P Global Bible Study',
                 style: TextStyle(
                   color: AppColors.cream,
                   fontWeight: FontWeight.w600,

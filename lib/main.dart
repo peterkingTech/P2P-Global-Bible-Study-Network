@@ -26,9 +26,12 @@ Future<void> main() async {
   // Supabase — replace placeholder values in constants.dart
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
-    anonKey: AppConstants.supabaseAnonKey,
+    anonKey: AppConstants.supabaseAnonKey, // ignore: deprecated_member_use
     authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
+    ),
+    realtimeClientOptions: const RealtimeClientOptions(
+      eventsPerSecond: 10,
     ),
   );
 

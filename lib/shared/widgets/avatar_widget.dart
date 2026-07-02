@@ -30,7 +30,6 @@ class AvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = size / 2;
     final bg = bgColor ?? AppColors.primaryGreen;
 
     return ClipOval(

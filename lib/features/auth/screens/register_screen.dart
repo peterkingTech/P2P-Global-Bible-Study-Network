@@ -40,7 +40,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           _passwordCtrl.text,
           _nameCtrl.text.trim(),
         );
-    if (ok && mounted) context.go(Routes.profileSetup);
+    if (ok && mounted) context.go(Routes.contactForm);
   }
 
   @override
@@ -75,7 +75,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  'Create your Vine & Branches account',
+                  'Create your P2P Global Bible Study account',
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: AppColors.lightGreen.withOpacity(0.7),

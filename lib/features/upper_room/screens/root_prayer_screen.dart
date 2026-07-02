@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../config/theme.dart';
-import '../../../core/providers/prayer_provider.dart';
+
 import '../../../features/root_network/widgets/root_network_widget.dart';
 import '../../../features/upper_room/widgets/upper_room_widget.dart';
 

@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/theme.dart';
+import '../../../core/models/prayer_model.dart';
+import '../../../core/providers/prayer_provider.dart';
 import '../../root_network/widgets/root_network_widget.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// UpperRoomWidget — mirrors upper-room.tsx
+// UpperRoomWidget — Peer-to-Peer Global Bible Study Network
 // Where the Church prays as one.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -14,81 +17,44 @@ class _PrayerRoom {
   final String id;
   final String nation;
   final String language;
-  final int present;
-  const _PrayerRoom(
-      {required this.id,
-      required this.nation,
-      required this.language,
-      required this.present});
+  const _PrayerRoom({
+    required this.id,
+    required this.nation,
+    required this.language,
+  });
 }
 
-class _WallRequest {
-  final int id;
-  final String nation;
-  final String text;
-  final String when;
-  const _WallRequest(
-      {required this.id,
-      required this.nation,
-      required this.text,
-      required this.when});
-}
-
+// Real prayer room definitions (geographic / language-based groupings)
 const _kRooms = [
-  _PrayerRoom(id: 'ng', nation: 'Nigeria', language: 'English · Yoruba', present: 42),
-  _PrayerRoom(id: 'kr', nation: 'South Korea', language: 'Korean', present: 31),
-  _PrayerRoom(id: 'br', nation: 'Brazil', language: 'Português', present: 28),
-  _PrayerRoom(id: 'in', nation: 'India', language: 'Hindi · Tamil', present: 55),
-  _PrayerRoom(id: 'ke', nation: 'Kenya', language: 'Swahili · English', present: 19),
-  _PrayerRoom(id: 'de', nation: 'Germany', language: 'Deutsch', present: 12),
-];
-
-const _kInitialWall = [
-  _WallRequest(
-      id: 1,
-      nation: 'Kenya',
-      text: "For my father's health, that the Lord would grant healing and peace to our home.",
-      when: '3m ago'),
-  _WallRequest(
-      id: 2,
-      nation: 'Brazil',
-      text: 'Wisdom for a hard decision this week. Pray I would seek Him first.',
-      when: '11m ago'),
-  _WallRequest(
-      id: 3,
-      nation: 'India',
-      text: 'For our small gathering — that we would love one another well and stay faithful.',
-      when: '24m ago'),
-  _WallRequest(
-      id: 4,
-      nation: 'South Korea',
-      text: 'Comfort for a friend who is grieving. May she know she is not alone.',
-      when: '38m ago'),
+  _PrayerRoom(id: 'ng', nation: 'Nigeria', language: 'English · Yoruba'),
+  _PrayerRoom(id: 'kr', nation: 'South Korea', language: 'Korean'),
+  _PrayerRoom(id: 'br', nation: 'Brazil', language: 'Português'),
+  _PrayerRoom(id: 'in', nation: 'India', language: 'Hindi · Tamil'),
+  _PrayerRoom(id: 'ke', nation: 'Kenya', language: 'Swahili · English'),
+  _PrayerRoom(id: 'de', nation: 'Germany', language: 'Deutsch'),
 ];
 
 const _kConfirmations = [
   'Someone prayed for you',
-  'A believer in Nairobi lifted your name',
+  'A believer lifted your name',
   'You were remembered in prayer',
   'Someone is praying with you now',
 ];
 
-class UpperRoomWidget extends StatefulWidget {
+class UpperRoomWidget extends ConsumerStatefulWidget {
   const UpperRoomWidget({super.key});
 
   @override
-  State<UpperRoomWidget> createState() => _UpperRoomWidgetState();
+  ConsumerState<UpperRoomWidget> createState() => _UpperRoomWidgetState();
 }
 
-class _UpperRoomWidgetState extends State<UpperRoomWidget> {
+class _UpperRoomWidgetState extends ConsumerState<UpperRoomWidget> {
   bool _playing = false;
   int _streamSeconds = 0;
   String? _activeRoom;
-  final List<_WallRequest> _wall = List.of(_kInitialWall);
   final TextEditingController _draftCtrl = TextEditingController();
   bool _recording = false;
   String? _confirmation;
-  int _nextId = 100;
   int _confirmIndex = 0;
 
   Timer? _streamTimer;
@@ -125,16 +91,15 @@ class _UpperRoomWidgetState extends State<UpperRoomWidget> {
     }
   }
 
-  void _submitRequest() {
+  Future<void> _submitRequest() async {
     final text = _draftCtrl.text.trim();
     if (text.isEmpty) return;
-    setState(() {
-      _wall.insert(
-        0,
-        _WallRequest(id: _nextId++, nation: 'Your room', text: text, when: 'just now'),
-      );
-      _draftCtrl.clear();
-    });
+    _draftCtrl.clear();
+    await ref.read(prayerNotifierProvider.notifier).submitRequest(
+          request: text,
+          category: PrayerCategory.personal,
+          anonymous: true,
+        );
   }
 
   @override
@@ -180,7 +145,7 @@ class _UpperRoomWidgetState extends State<UpperRoomWidget> {
                 onSubmit: _submitRequest,
               ),
               SizedBox(height: 16.h),
-              _NationPrayerWall(wall: _wall),
+              _NationPrayerWall(),
               SizedBox(height: 80.h),
             ],
           ),
@@ -569,15 +534,8 @@ class _RoomTile extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 6.w),
             Icon(Icons.people_outline,
                 size: 13.sp, color: AppColors.upperRoomMuted),
-            SizedBox(width: 3.w),
-            Text(
-              '${room.present}',
-              style: TextStyle(
-                  fontSize: 11.sp, color: AppColors.upperRoomMuted),
-            ),
           ],
         ),
       ),
@@ -737,12 +695,13 @@ class _PrayerRequestInput extends StatelessWidget {
 
 // ── Nation Prayer Wall ────────────────────────────────────────────────────────
 
-class _NationPrayerWall extends StatelessWidget {
-  final List<_WallRequest> wall;
-  const _NationPrayerWall({required this.wall});
+class _NationPrayerWall extends ConsumerWidget {
+  const _NationPrayerWall();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prayers = ref.watch(realtimePrayerWallProvider);
+
     return _UrCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -762,29 +721,77 @@ class _NationPrayerWall extends StatelessWidget {
                 color: AppColors.upperRoomMuted.withOpacity(0.70)),
           ),
           SizedBox(height: 14.h),
-          ...wall.map((req) => Padding(
-                padding: EdgeInsets.only(bottom: 10.h),
-                child: _WallCard(request: req),
-              )),
+          prayers.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: CircularProgressIndicator(
+                  color: Color(0xFFB8913A),
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+            error: (e, _) => Padding(
+              padding: EdgeInsets.all(12.r),
+              child: Text(
+                'Could not load prayer requests. Please check your connection.',
+                style: TextStyle(
+                    fontSize: 12.sp, color: AppColors.upperRoomMuted),
+              ),
+            ),
+            data: (list) => list.isEmpty
+                ? Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    child: Text(
+                      'No prayer requests yet. Be the first to share one.',
+                      style: TextStyle(
+                          fontSize: 12.sp, color: AppColors.upperRoomMuted),
+                    ),
+                  )
+                : Column(
+                    children: list
+                        .map((prayer) => Padding(
+                              padding: EdgeInsets.only(bottom: 10.h),
+                              child: _WallCard(prayer: prayer),
+                            ))
+                        .toList(),
+                  ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _WallCard extends StatefulWidget {
-  final _WallRequest request;
-  const _WallCard({required this.request});
+class _WallCard extends ConsumerStatefulWidget {
+  final PrayerModel prayer;
+  const _WallCard({required this.prayer});
 
   @override
-  State<_WallCard> createState() => _WallCardState();
+  ConsumerState<_WallCard> createState() => _WallCardState();
 }
 
-class _WallCardState extends State<_WallCard> {
+class _WallCardState extends ConsumerState<_WallCard> {
   bool _prayed = false;
+
+  static String _timeAgo(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inSeconds < 60) return 'just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    return '${diff.inDays}d ago';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final location = [widget.prayer.city, widget.prayer.country]
+        .where((s) => s != null && s.isNotEmpty)
+        .join(', ');
+    final label = widget.prayer.isAnonymous || location.isEmpty
+        ? 'Shared anonymously'
+        : location;
+    final timeAgo = _timeAgo(widget.prayer.createdAt);
+
     return Container(
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
@@ -799,14 +806,14 @@ class _WallCardState extends State<_WallCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.request.nation,
+                label,
                 style: TextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.upperRoomAmber),
               ),
               Text(
-                widget.request.when,
+                timeAgo,
                 style: TextStyle(
                     fontSize: 10.sp, color: const Color(0xFF8A7448)),
               ),
@@ -814,7 +821,7 @@ class _WallCardState extends State<_WallCard> {
           ),
           SizedBox(height: 7.h),
           Text(
-            widget.request.text,
+            widget.prayer.request,
             style: TextStyle(
                 fontSize: 13.sp,
                 height: 1.6,
@@ -823,7 +830,14 @@ class _WallCardState extends State<_WallCard> {
           SizedBox(height: 10.h),
           // Pray button
           GestureDetector(
-            onTap: _prayed ? null : () => setState(() => _prayed = true),
+            onTap: _prayed
+                ? null
+                : () {
+                    setState(() => _prayed = true);
+                    ref
+                        .read(prayerNotifierProvider.notifier)
+                        .markPrayed(widget.prayer.id);
+                  },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: double.infinity,

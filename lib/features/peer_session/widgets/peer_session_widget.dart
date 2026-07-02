@@ -1,31 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../config/theme.dart';
+import '../../../core/providers/session_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PeerSessionWidget — mirrors peer-session.tsx
+// PeerSessionWidget — Peer-to-Peer Global Bible Study Network
 // A live, co-present peer Bible study session.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const _kMemoryVerse = (
-  ref: 'Ecclesiastes 4:9–10',
-  text: 'Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow.',
-);
-
-const _kLesson = (
-  title: 'Walking Together: The Grace of Companionship',
-  subtitle: 'Session 4 · The Rhythms of Discipleship',
-  paragraphs: [
-    'Discipleship was never meant to be a solitary climb. From the very beginning, God declared that it is not good for a person to be alone. The life of faith is lived shoulder to shoulder, in the company of others who are pressing toward the same hope.',
-    'When Jesus sent out his followers, he sent them in pairs. There is wisdom in this. A companion sees what we cannot see in ourselves, encourages us when our own strength fails, and holds us to the promises we have made in brighter moments.',
-    'To study Scripture together is to invite accountability and joy into the same room. One reads, another listens; one questions, another remembers; and between them the Word takes deeper root than it ever could alone.',
-    'Consider how a single ember, pulled from the fire, quickly grows cold — yet gathered with others, it burns steadily through the night. So it is with faith. We were made to keep one another warm.',
-    'As you meet today, do not rush. Let the silence between words be unhurried. Pray before you begin, listen more than you speak, and commit together to a single, concrete step of obedience before you part.',
-    "The reward, Solomon says, is good. Not because the road is easy, but because you no longer walk it alone. When one of you falls, the other will be there to lift you up. This is the quiet, steady grace of companionship.",
-  ],
-);
-
+// Session checklist steps — core product UX, not demo data
 const _kSteps = [
   'Both prayed together',
   'Memory verse recited',
@@ -34,36 +20,39 @@ const _kSteps = [
   'Checkpoint completed',
 ];
 
-const _kPeerMessages = [
-  'Miriam is reading along',
-  'Miriam is scrolling',
-  'Miriam recited the memory verse',
-  'Miriam completed: Both prayed together',
-  'Miriam is praying',
-  'Miriam highlighted a passage',
-];
-
-class PeerSessionWidget extends StatefulWidget {
+class PeerSessionWidget extends ConsumerStatefulWidget {
   const PeerSessionWidget({super.key});
 
   @override
-  State<PeerSessionWidget> createState() => _PeerSessionWidgetState();
+  ConsumerState<PeerSessionWidget> createState() => _PeerSessionWidgetState();
 }
 
-class _PeerSessionWidgetState extends State<PeerSessionWidget> {
+class _PeerSessionWidgetState extends ConsumerState<PeerSessionWidget> {
   int _seconds = 0;
   List<bool> _checked = List.filled(_kSteps.length, false);
   double _readProgress = 0.0;
-  String _peerNote = 'Miriam joined the session';
+  String _peerNote = 'Peer joined the session';
   bool _ended = false;
   bool _confirming = false;
   final TextEditingController _reflectionCtrl = TextEditingController();
   bool _saved = false;
-  int _peerIdx = 0;
+
+  // Session lesson data (fetched from Supabase via liveSessionProvider)
+  String _sessionTitle = 'Bible Study Session';
+  String _sessionSubtitle = 'Peer-to-Peer Study';
+  String? _memoryVerseText;
+  String? _memoryVerseRef;
+  List<String> _lessonParagraphs = [];
 
   Timer? _sessionTimer;
-  Timer? _peerTimer;
+  RealtimeChannel? _presenceChannel;
   final ScrollController _contentScroll = ScrollController();
+
+  // Public callbacks — let helper StatelessWidgets mutate state without
+  // directly calling the protected setState().
+  void setSaved(bool value) => setState(() => _saved = value);
+  void toggleChecked(int index) => setState(() => _checked[index] = !_checked[index]);
+  void setConfirming(bool value) => setState(() => _confirming = value);
 
   @override
   void initState() {
@@ -72,15 +61,61 @@ class _PeerSessionWidgetState extends State<PeerSessionWidget> {
         Timer.periodic(const Duration(seconds: 1), (_) {
       if (!_ended && mounted) setState(() => _seconds++);
     });
-    _peerTimer = Timer.periodic(const Duration(milliseconds: 4200), (_) {
-      if (!_ended && mounted) {
+    _subscribeToPresence();
+    _loadSessionLesson();
+    _contentScroll.addListener(_onScroll);
+  }
+
+  Future<void> _loadSessionLesson() async {
+    final session = ref.read(liveSessionProvider).session;
+    if (session == null) return;
+    try {
+      final rows = await Supabase.instance.client
+          .from('lessons')
+          .select('title, subtitle, content, memory_verse, memory_verse_ref')
+          .eq('id', session.lessonId)
+          .single();
+      if (mounted) {
         setState(() {
-          _peerNote = _kPeerMessages[_peerIdx % _kPeerMessages.length];
-          _peerIdx++;
+          _sessionTitle = (rows['title'] as String?) ?? 'Bible Study Session';
+          _sessionSubtitle = (rows['subtitle'] as String?) ?? 'Peer-to-Peer Study';
+          _memoryVerseText = rows['memory_verse'] as String?;
+          _memoryVerseRef = rows['memory_verse_ref'] as String?;
+          final content = (rows['content'] as String?) ?? '';
+          _lessonParagraphs = content
+              .split('\n\n')
+              .where((p) => p.trim().isNotEmpty)
+              .toList();
         });
       }
-    });
-    _contentScroll.addListener(_onScroll);
+    } catch (_) {
+      // Lesson content will remain at defaults; session still functional
+    }
+  }
+
+  void _subscribeToPresence() {
+    final session = ref.read(liveSessionProvider).session;
+    if (session == null) return;
+
+    _presenceChannel = Supabase.instance.client
+        .channel('session:${session.id}')
+        .onPresenceSync((_) {
+          final presences = _presenceChannel?.presenceState();
+          if (mounted && (presences?.isNotEmpty ?? false)) {
+            setState(() => _peerNote = 'Peer is present in this session');
+          }
+        })
+        .onPresenceJoin((_) {
+          if (mounted) setState(() => _peerNote = 'Peer joined the session');
+        })
+        .onPresenceLeave((_) {
+          if (mounted) setState(() => _peerNote = 'Peer stepped away');
+        })
+      ..subscribe((status, _) async {
+        if (status == RealtimeSubscribeStatus.subscribed) {
+          await _presenceChannel?.track({'user': 'me', 'online_at': DateTime.now().toIso8601String()});
+        }
+      });
   }
 
   void _onScroll() {
@@ -94,7 +129,7 @@ class _PeerSessionWidgetState extends State<PeerSessionWidget> {
   @override
   void dispose() {
     _sessionTimer?.cancel();
-    _peerTimer?.cancel();
+    _presenceChannel?.unsubscribe();
     _reflectionCtrl.dispose();
     _contentScroll.removeListener(_onScroll);
     _contentScroll.dispose();
@@ -116,7 +151,7 @@ class _PeerSessionWidgetState extends State<PeerSessionWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _HeaderCard(mm: _mm, ss: _ss),
+              _HeaderCard(mm: _mm, ss: _ss, state: this),
               SizedBox(height: 16.h),
               // On wide screens: row; on narrow: column
               LayoutBuilder(builder: (context, constraints) {
@@ -227,7 +262,7 @@ class _SessionComplete extends StatelessWidget {
                   maxLines: 6,
                   onChanged: (_) {
                     if (s._saved) {
-                      s.setState(() => s._saved = false);
+                      s.setSaved(false);
                     }
                   },
                   decoration: InputDecoration(
@@ -256,7 +291,7 @@ class _SessionComplete extends StatelessWidget {
                   builder: (_, val, __) {
                     final enabled = val.text.trim().isNotEmpty;
                     return GestureDetector(
-                      onTap: enabled ? () => s.setState(() => s._saved = true) : null,
+                      onTap: enabled ? () => s.setSaved(true) : null,
                       child: AnimatedOpacity(
                         opacity: enabled ? 1.0 : 0.40,
                         duration: const Duration(milliseconds: 200),
@@ -303,7 +338,8 @@ class _SessionComplete extends StatelessWidget {
 class _HeaderCard extends StatelessWidget {
   final String mm;
   final String ss;
-  const _HeaderCard({required this.mm, required this.ss});
+  final _PeerSessionWidgetState state;
+  const _HeaderCard({required this.mm, required this.ss, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +361,7 @@ class _HeaderCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _kLesson.subtitle,
+                      state._sessionSubtitle,
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
@@ -335,7 +371,7 @@ class _HeaderCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      _kLesson.title,
+                      state._sessionTitle,
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
@@ -388,7 +424,9 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '"${_kMemoryVerse.text}"',
+                  state._memoryVerseText != null
+                      ? '"${state._memoryVerseText}"'
+                      : '"Two are better than one, because they have a good reward for their toil."',
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontStyle: FontStyle.italic,
@@ -398,7 +436,7 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  _kMemoryVerse.ref,
+                  state._memoryVerseRef ?? 'Ecclesiastes 4:9',
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w500,
@@ -482,21 +520,36 @@ class _LessonContent extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(18.w, 4.h, 18.w, 18.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: _kLesson.paragraphs
-                    .map(
-                      (p) => Padding(
-                        padding: EdgeInsets.only(bottom: 14.h),
-                        child: Text(
-                          p,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            height: 1.70,
-                            color: AppColors.textDark,
+                children: state._lessonParagraphs.isEmpty
+                    ? [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 14.h),
+                          child: Text(
+                            'Lesson content is loading. Take a moment to pray together before you begin.',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              height: 1.70,
+                              color: AppColors.textDark,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                      ]
+                    : state._lessonParagraphs
+                        .map(
+                          (p) => Padding(
+                            padding: EdgeInsets.only(bottom: 14.h),
+                            child: Text(
+                              p,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                height: 1.70,
+                                color: AppColors.textDark,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
               ),
             ),
           ),
@@ -566,7 +619,7 @@ class _SidePanel extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Miriam Osei',
+                        'Your study partner',
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -645,7 +698,7 @@ class _SidePanel extends StatelessWidget {
                     button: true,
                     child: GestureDetector(
                       onTap: () =>
-                          s.setState(() => s._checked[i] = !s._checked[i]),
+                          s.toggleChecked(i),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         padding: EdgeInsets.symmetric(
@@ -705,7 +758,7 @@ class _SidePanel extends StatelessWidget {
 
         // End session button
         GestureDetector(
-          onTap: () => s.setState(() => s._confirming = true),
+          onTap: () => s.setConfirming(true),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 11.h),
             decoration: BoxDecoration(

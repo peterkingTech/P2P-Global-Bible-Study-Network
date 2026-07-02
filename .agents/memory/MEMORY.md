@@ -1,0 +1,3 @@
+- [Flutter P2P Supabase setup](flutter-p2p-supabase.md) — dart-define flags required for Supabase credentials at compile time; workflow command must include --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+- [Peer session widget patterns](peer-session-patterns.md) — ConsumerStatefulWidget with public callback methods (setSaved, toggleChecked, setConfirming) needed when helper StatelessWidgets must mutate parent state
+- [Prayer realtime stream](prayer-realtime-stream.md) — realtimePrayerWallProvider must use StreamController to re-fetch and yield on Postgres change events; ref.invalidate alone does not cause the stream to re-yield

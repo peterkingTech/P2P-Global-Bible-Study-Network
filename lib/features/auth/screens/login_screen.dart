@@ -54,9 +54,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 SizedBox(height: 32.h),
 
-                // Logo
+                // P2P Official Logo
                 Center(
-                  child: Text('🌿', style: TextStyle(fontSize: 48.sp)),
+                  child: ClipOval(
+                    child: Image.network(
+                      'https://omkqkasniakcnmfcwrvs.supabase.co/storage/v1/object/public/P2P%20Official%20Logo/P2P%20Official%20Logo.png',
+                      width: 72.r,
+                      height: 72.r,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 72.r,
+                        height: 72.r,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.accentGreen.withOpacity(0.15),
+                          border: Border.all(
+                            color: AppColors.accentGreen.withOpacity(0.4),
+                          ),
+                        ),
+                        child: Icon(Icons.menu_book_outlined,
+                            color: AppColors.lightGreen, size: 32.sp),
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 16.h),
 

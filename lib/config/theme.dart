@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Vine & Branches — Design Tokens
+// Peer-to-Peer Global Bible Study Network — Design Tokens
 // Extracted from the React / Tailwind source components.
 // ─────────────────────────────────────────────────────────────────────────────
 
