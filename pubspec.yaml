@@ -1,0 +1,65 @@
+name: p2p_global_bible_study
+description: Vine & Branches — P2P discipleship companion app.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # Backend
+  supabase_flutter: ^2.5.0
+
+  # Animations
+  rive: ^0.13.7
+
+  # UI / fonts
+  flutter_svg: ^2.0.10
+  google_fonts: ^6.2.1
+  flutter_screenutil: ^5.9.0
+  fl_chart: ^0.69.0
+
+  # Localisation
+  intl: ^0.20.2
+
+  # Storage
+  shared_preferences: ^2.3.0
+  flutter_secure_storage: ^9.2.2
+
+  # Device features
+  image_picker: ^1.1.2
+  url_launcher: ^6.3.0
+  share_plus: ^10.0.0
+  flutter_local_notifications: ^17.2.2
+  connectivity_plus: ^6.0.3
+  package_info_plus: ^8.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.11
+  riverpod_generator: ^2.4.3
+
+flutter:
+  uses-material-design: true
+  generate: true # enable l10n code generation
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/rive/
+    - assets/tree/
+

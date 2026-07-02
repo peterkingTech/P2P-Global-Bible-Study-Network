@@ -1,0 +1,456 @@
+### Step 6: Replit — Authentication & Onboarding
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the complete authentication and onboarding flow:
+
+1. SPLASH SCREEN
+   - Animated logo (fade + scale over 2 seconds)
+   - Tagline: "The earth will be filled..."
+   - Auto-navigate to auth state check
+
+2. ONBOARDING JOURNEY (5 steps, PageView with dots indicator)
+   Step 1: "Meet Your Peer Guide" - explain P2P concept
+   Step 2: "Share Your Story" - spiritual background form
+   Step 3: "Pray Together" - first prayer experience
+   Step 4: "Plant Your Tree" - create spiritual profile, seed appears
+   Step 5: "Begin Module 1" - redirect to learning
+
+3. AUTHENTICATION
+   - Phone OTP: input number → send code → verify → create profile
+   - Social: Google Sign-In, Apple Sign-In
+   - Guest mode: limited browsing, prompt to register for full access
+
+4. PROFILE SETUP
+   - Name, photo, location (with map picker)
+   - Language selection (15 options)
+   - Spiritual background (new believer, returning, mature)
+   - Gift selection: toggle grid of 6 categories × 4 skills each
+
+5. TREE PLANTING CEREMONY
+   - Animated sequence: seed drops into soil → water → sprout emerges
+   - User's first tree created in database
+   - Seed appears on global map
+
+Use Riverpod for state management. Connect to Supabase auth. Add form validation. Make it beautiful with the green/gold theme.`
+
+### Step 7: Replit — Living Tree System
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the Living Tree visualization system:
+
+TREE MODEL:
+class TreeModel {
+  final String userId;
+  final TreeStage stage; // enum: dormantSeed, sprout, youngTree, fruitfulTree, forestBuilder, forestOfNations
+  final double rootsScore;
+  final double trunkScore;
+  final double branchesScore;
+  final double canopyScore;
+  final int fruitCount;
+  final double glowLevel;
+  final List<FruitModel> visibleFruits;
+  final DateTime plantedAt;
+}
+
+WIDGETS TO BUILD:
+
+1. LivingTreeWidget (main display)
+   - CustomPainter for tree structure
+   - Tap zones: Roots, Trunk, Branches, Canopy, Fruit
+   - Tooltip on tap showing score breakdown
+   - Size adapts to screen
+
+2. TreeStageBadge
+   - Current stage with icon and color
+   - Progress to next stage
+
+3. FruitBadge
+   - Individual fruit with type icon
+   - Tooltip: "Earned [date] for [reason]"
+   - Secret fruits show as question mark until earned
+
+4. TreeGrowthAnimation
+   - Smooth morphing between stages
+   - Duration: 2 seconds
+   - Easing: easeInOutCubic
+
+5. MiniTreeWidget (for lists)
+   - Compact 60x60 version
+   - Shows stage icon + fruit count
+
+ANIMATIONS:
+- Idle: leaf sway (3s infinite)
+- Growth: trunk thickens, branches extend
+- Fruit appear: scale + rotate animation
+- Glow pulse: brightness oscillation
+
+Connect to treeProvider that syncs with Supabase. Use the color palette from theme.dart.`
+
+### Step 8: Replit — Learning System
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the 12-module learning journey:
+
+MODULE DATA:
+Create a local JSON asset with all 12 modules, 7 lessons each:
+- Module title, description, memory verse reference
+- Per lesson: title, content (markdown), 5 discussion questions, life assignment, glossary terms, checkpoint criteria
+
+LESSON UI:
+1. ModuleJourneyMap
+   - Horizontal scrollable path
+   - 12 module nodes connected by line
+   - Completed: green check, Current: pulsing gold, Locked: gray
+   - Tap to expand module detail
+
+2. LessonView (tabbed interface)
+   - Tab 1 "Verse": Memory verse with trainer (flip card, practice, test)
+   - Tab 2 "Content": Scrollable teaching with progress tracking
+   - Tab 3 "Questions": 5 discussion questions with text input
+   - Tab 4 "Assignment": Life action commitment with checkbox
+   - Tab 5 "Checkpoint": Peer verification rubric
+
+3. MemoryVerseTrainer
+   - Flip card: front = verse text, back = reference
+   - Practice mode: tap to reveal word by word
+   - Test mode: type from memory, compare with original
+   - Voice input option
+
+4. AssignmentTracker
+   - Weekly calendar view
+   - Check off completed assignments
+   - Reflection note input
+
+THE FOUR GATES:
+1. Read Gate: track scroll depth + time (word_count / 200 wpm)
+2. Reflection Gate: submit written reflection before session
+3. Session Gate: both peers open shared session, checklist completion
+4. Assignment Gate: honest report before next lesson unlocks
+
+Connect to lessonProvider with offline support. Sync to Supabase when online.`
+
+### Step 9: Replit — Peer Matching & Sessions
+
+**In Replit Agent, paste:**
+
+#### plain
+
+Implement the complete peer matching system with FOUR paths:
+
+PATH 1: INVITE LINK (User has someone in mind)
+
+- User taps "I have someone in mind"
+- System generates unique link: p2pglobal.app/join/[uuid]
+- Share via WhatsApp, SMS, Email, Copy Link, QR Code
+- Recipient clicks → custom welcome page showing inviter's name, tree stage, personal message
+- Recipient streamlined signup (name, phone, password only)
+- Auto-match: inviter = guide, recipient = learner
+- Link expires in 7 days, one-time use, rate limit 5/day
+
+PATH 2: DISCOVERY SEARCH (Browse available peers)
+
+- Filter by: language, timezone range (±1h/±3h/±6h/any), tree stage, gender, age, gifts, availability days/times, location (same city/country/any)
+- Scoring: language exact +20, timezone overlap >50% +15, stage diff optimal (1-2) +15, gift complementarity +10, same country +5, recently active +5
+- Results as cards with tree mini-view, compatibility indicators
+- Send request with optional message → accept/decline flow
+
+PATH 3: SMART MATCH (AI finds best fit)
+
+- Brief questionnaire: preferred study time, what matters most (language/timezone/background), video comfort level
+- System runs weighted algorithm with preference learning
+- Presents top 3 with compatibility % and breakdown
+- User selects → request sent
+- If all decline, auto-suggest next 3
+- Feedback loop: track long-term match success, refine scoring
+
+PATH 4: GROUP IMPORT (Church/organization)
+
+- Admin generates 6-character group code
+- Members enter code during onboarding
+- Group dashboard: member list, tree stages, pairing suggestions, bulk messaging
+- Admin can auto-pair (random or guided) or let members self-match
+- Members can still match outside group
+
+MATCH LIFECYCLE:
+Proposed → Accepted → Active → Paused → Ended → Archived
+Graceful ending: both agree, reason captured, optional rematch
+Conflict resolution: mediator assignment from network leaders
+
+DATABASE TABLES:
+
+- invite_links (id, inviter_id, code, status, created_at, expires_at)
+- peer_matches (id, learner_id, guide_id, path, status, matched_at, ended_at, end_reason)
+- match_requests (id, sender_id, receiver_id, message, status, created_at)
+- discovery_filters (user_id, saved filter presets)
+- smart_match_preferences (user_id, time_preference, priority_factors, video_comfort)
+- groups (id, code, name, admin_id, created_at)
+- group_members (group_id, user_id, joined_at, paired_within_group)
+
+UI COMPONENTS:
+
+- MatchPathSelector: four big cards choosing path
+- InvitePeerScreen: link generation + share sheet + QR code
+- WelcomeLandingPage: custom for invite links
+- InviteStatusCard: "Waiting for Sarah..." with resend/remind
+- DiscoverySearchScreen: filter chips + results list
+- PeerCard: photo, tree mini, languages, availability, request button
+- FilterBottomSheet: all filters with save/reset
+- MatchRequestDialog: compose message
+- PendingRequestsList: incoming/outgoing with badges
+- SmartMatchQuiz: 3-5 question wizard
+- CompatibilityBadge: "94% match" with tooltip breakdown
+- GroupJoinScreen: enter code or create group
+- GroupDashboard: admin view with pairing tools
+- PairingSuggestionCard: "Sarah & David would be great"
+
+SESSION SCHEDULER (same for all paths):
+
+- Availability picker: days + time ranges
+- Propose 3 slots, other confirms one
+- Add to device calendar
+- Reminders: 24h, 1h, 15min
+
+ACTIVE SESSION SCREEN:
+
+- Opens simultaneously for both
+- Countdown timer (no fixed length)
+- Real-time sync via Supabase realtime
+- 5-step checklist (peer guide only):
+□ Both prayed together
+□ Memory verse recited
+□ Content discussed
+□ Assignment committed
+□ Checkpoint completed
+- Collaborative notes
+- Extend/End buttons
+- Auto-flag if < 5 minutes
+
+POST-SESSION:
+
+- Both submit reflection
+- Guide submits checkpoint assessment
+- Assignment gate unlocks
+- Tree growth calculated
+
+Connect to matchingProvider, inviteProvider, discoveryProvider, smartMatchProvider, groupProvider.
+
+### Step 10: Replit — Global Forest
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the Global Forest visualization:
+
+DATA STRUCTURE:
+- ForestNode: {id, userId, name, location, coordinates, stage, lastActive, mentorId, menteeIds}
+- Connection: {fromId, toId, type: 'mentoring' | 'paul-timothy'}
+
+VISUALIZATION MODES:
+1. Personal Forest
+   - Center: user's tree
+   - First ring: direct mentees
+   - Second ring: mentees' mentees
+   - Connection lines with animation
+   - Tap any tree → profile overlay
+
+2. City Grove
+   - Cluster trees by city
+   - City label with disciple count
+   - Zoom to see individuals
+
+3. Nation View
+   - Country boundaries (simplified)
+   - Color intensity = disciple density
+   - Tap country → city list
+
+4. Global Heatmap
+   - World map background
+   - Tree nodes as glowing dots
+   - Size = stage, Glow = activity
+   - Filter layers: active, new, mentoring, praying
+
+INTERACTIONS:
+- Pinch to zoom, pan to explore
+- Tap tree → profile card with "Pray for them" button
+- Search by name or location
+- Filter: stage, activity, relationship
+
+DASHBOARD OVERLAY:
+- Stat cards: "24,817 fruits", "156 cities", "847 praying"
+- Trend sparklines
+- Top growing groves
+
+PERFORMANCE:
+- Cluster trees at zoomed-out levels
+- Lazy load individual trees
+- Cache map tiles
+
+Use flutter_map package or custom CustomPainter. Connect to forestProvider.`
+
+### Step 11: Replit — Prayer System
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the Upper Room prayer system:
+
+ROOT PRAYER NETWORK:
+- Prayer requests travel UP mentoring chain: mentee → mentor → mentor's mentor
+- Visual: underground root network glowing when prayer active
+- No public feed, no counts, no likes
+- Anonymous notifications: "Someone prayed for you"
+
+PRAYER REQUEST FLOW:
+1. User submits request (text or voice)
+2. Request enters root_path: [requester_id, mentor_id, grandmentor_id, ...]
+3. Each intercessor in path sees request in their queue
+4. Intercessor taps "I prayed" (no details needed)
+5. Requester gets gentle glow notification
+
+PRAYER ROOMS:
+- Live rooms by nation/language
+- Participant count, duration
+- Join → auto-mute → raise hand to speak
+- Background audio stream option
+
+24/7 PRAYER STREAMS:
+- Continuous audio by language
+- Background play capability
+- Prayer leader schedule
+
+NATION PRAYER WALL:
+- Requests for specific nations/cities
+- Categories: revival, persecution, missionaries, unreached
+- "Stand in the gap" commitment
+
+ELIJAH PROTOCOL (crisis):
+- Trigger: user indicates quit intent or crisis keywords
+- One message: "Elijah sat under a tree and said it was enough. What do you need?"
+- Three options: "Prayer", "Talk to someone", "Rest for a while"
+- Routes to: root prayer, Watchtower counselor, or Dormant Seed mode
+
+WIDGETS:
+- RootPrayerView: glowing root visualization
+- PrayerRequestComposer: text/voice input with category picker
+- PrayerRoomList: live rooms with counts
+- PrayerStreamPlayer: audio with play/pause
+- NationPrayerWall: scrollable by region
+- ElijahDialog: crisis intervention UI
+
+Connect to prayerProvider with Supabase realtime.`
+
+---
+
+## PHASE 5: ADVANCED FEATURES (Days 15-20)
+
+### Step 12: Replit — Mega Harvest System
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the Mega Harvest event system:
+
+EVENT STRUCTURE:
+- mega_harvest_events table: year, date, status (planning/active/followup)
+- Three phases: Planting Season (6 weeks before), Mega Harvest Day, Follow-Up Season (4 weeks after)
+
+PLANTING SEASON:
+- Home tab transforms: countdown + Personal Harvest Map
+- 6 preparation lessons (gospel sharing, conversations, objections, prayer, follow-up, Luke 10 pairs)
+- Personal Harvest Map: drop pins for people/places to reach
+- Sealed Letters: write to those you want to reach, locked until after event
+- Field Briefing: night-before spiritual prep
+
+MEGA HARVEST DAY:
+- Live Field Mode: stripped UI (map, gospel guide, one-tap logging)
+- Rolling Dawn Prayer: 24-hour timezone chain
+- Midnight Watch: 11pm prayer across timezones
+- Pair-Based Going: everyone in pairs (Luke 10)
+- Children's Harvest: age-appropriate tools
+- Silent Witnesses: prayer cover for those unable to go
+- Real-time global map lighting up with activity
+
+FOLLOW-UP SEASON:
+- New Seed Connection: decisions matched to guides within 48h
+- Global Testimony Stream: audio from cities worldwide
+- New Seed Celebration: seeds appear on map with animation
+- Debrief Sessions: peer group reflections
+
+HARVEST MOON (quarterly):
+- 72-hour regional mobilization
+- Live forest updates
+- Collective growth visible
+
+WIDGETS:
+- MegaHarvestCountdown: animated timer
+- HarvestMapEditor: drop pins, add notes
+- SealedLetterComposer: write + lock with date
+- LiveFieldMode: minimal UI for harvest day
+- ConversationLogger: one-tap conversation/decision logging
+- TestimonyRecorder: audio upload
+- GlobalHarvestViz: real-time map updates
+
+Connect to megaHarvestProvider with event state management.`
+
+### Step 13: Replit — Fruit System & Gamification
+
+**In Replit Agent, paste:**
+
+#### plain
+
+`Implement the fruit system and faithfulness tracking:
+
+FRUIT TYPES (16):
+Love, Joy, Peace, Faith, Prayer, Word, Evangelism, Discipleship, Compassion, Obedience, Integrity, Faithfulness, Community, Harvest, Restoration, Leadership, Root
+
+EARN CONDITIONS:
+- System-observed: consistency, patterns, time (auto-awarded)
+- Peer-confirmed: "Yes, I experienced this" (peer submits confirmation)
+- Outcome-verified: mentee completes module, starts discipleship, returns from dormant
+
+SECRET FRUITS (hidden until earned):
+- Barnabas Fruit: consistent quiet encouragement over time
+- Timothy Fruit: mentee becomes disciple-maker
+- Shepherd Fruit: restore someone who left
+- Faithful Servant Fruit: 5+ years consistency
+
+FAITHFULNESS POINTS:
+- Wisdom Points (WP): Scripture understanding
+- Faithfulness XP: consistency over time
+- Fruit Points: discipleship milestones
+- Servant Score: acts of service
+
+HALL OF FAITH:
+- Testimony archive, not leaderboard
+- Stories with audio/video
+- Filter by nation, gift, stage
+- Inspire next generation
+
+FRUIT HARVEST CELEBRATIONS:
+- Blossom: first fruit of type
+- Harvest Season: 10+ fruits
+- Abundant Harvest: 50+ fruits
+- Nations Harvest: fruit from 3+ nations
+- Earth Filled: 100+ fruits
+
+WIDGETS:
+- FruitCollectionGrid: all fruits, earned/unlocked states
+- FruitDetailSheet: how earned, source, date, story
+- FaithfulnessDashboard: WP, XP, Fruit Points, Servant Score trends with charts
+- HallOfFaithList: testimony cards
+- HarvestCelebrationOverlay: confetti + animation on milestone
+- SecretFruitReveal: mystery animation when discovered
+
+Use fl_chart for trend visualization. Connect to fruitProvider.`

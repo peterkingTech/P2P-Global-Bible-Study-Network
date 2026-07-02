@@ -1,0 +1,137 @@
+`Create a new Flutter project named "p2p_global_bible_study" with this exact folder structure:
+
+lib/
+├── main.dart
+├── app.dart
+├── config/
+│   ├── routes.dart
+│   ├── theme.dart
+│   └── constants.dart
+├── core/
+│   ├── models/
+│   │   ├── user_model.dart
+│   │   ├── tree_model.dart
+│   │   ├── module_model.dart
+│   │   ├── lesson_model.dart
+│   │   ├── session_model.dart
+│   │   ├── fruit_model.dart
+│   │   ├── prayer_model.dart
+│   │   └── forest_node_model.dart
+│   ├── services/
+│   │   ├── supabase_service.dart
+│   │   ├── auth_service.dart
+│   │   ├── matching_service.dart
+│   │   ├── notification_service.dart
+│   │   └── analytics_service.dart
+│   ├── providers/
+│   │   ├── auth_provider.dart
+│   │   ├── tree_provider.dart
+│   │   ├── lesson_provider.dart
+│   │   ├── session_provider.dart
+│   │   ├── forest_provider.dart
+│   │   └── prayer_provider.dart
+│   └── utils/
+│       ├── validators.dart
+│       ├── formatters.dart
+│       ├── extensions.dart
+│       └── helpers.dart
+├── features/
+│   ├── auth/
+│   │   ├── screens/
+│   │   │   ├── splash_screen.dart
+│   │   │   ├── onboarding_screen.dart
+│   │   │   ├── login_screen.dart
+│   │   │   ├── register_screen.dart
+│   │   │   └── profile_setup_screen.dart
+│   │   └── widgets/
+│   │       ├── gift_selection_grid.dart
+│   │       └── tree_planting_animation.dart
+│   ├── home/
+│   │   ├── screens/
+│   │   │   └── home_screen.dart
+│   │   └── widgets/
+│   │       ├── living_tree_widget.dart
+│   │       ├── daily_verse_card.dart
+│   │       ├── session_prompt_card.dart
+│   │       └── prayer_pulse_indicator.dart
+│   ├── learn/
+│   │   ├── screens/
+│   │   │   ├── module_journey_screen.dart
+│   │   │   ├── lesson_screen.dart
+│   │   │   └── memory_verse_trainer.dart
+│   │   └── widgets/
+│   │       ├── module_card.dart
+│   │       ├── lesson_list_item.dart
+│   │       └── checkpoint_rubric.dart
+│   ├── mentor/
+│   │   ├── screens/
+│   │   │   ├── mentor_dashboard.dart
+│   │   │   └── session_scheduler.dart
+│   │   └── widgets/
+│   │       ├── peer_profile_card.dart
+│   │       ├── mentee_tree_list.dart
+│   │       └── watchtower_button.dart
+│   ├── forest/
+│   │   ├── screens/
+│   │   │   ├── personal_forest_screen.dart
+│   │   │   └── global_heatmap_screen.dart
+│   │   └── widgets/
+│   │       ├── tree_node.dart
+│   │       ├── connection_line.dart
+│   │       └── forest_dashboard.dart
+│   ├── upper_room/
+│   │   ├── screens/
+│   │   │   ├── root_prayer_screen.dart
+│   │   │   ├── live_prayer_rooms.dart
+│   │   │   └── nation_prayer_wall.dart
+│   │   └── widgets/
+│   │       ├── prayer_request_card.dart
+│   │       └── prayer_stream_player.dart
+│   └── missions/
+│       ├── screens/
+│       │   ├── missions_hub.dart
+│       │   └── weekly_challenge.dart
+│       └── widgets/
+│           ├── unreached_peoples_map.dart
+│           └── dark_nation_card.dart
+├── shared/
+│   ├── widgets/
+│   │   ├── custom_button.dart
+│   │   ├── custom_card.dart
+│   │   ├── nav_pill.dart
+│   │   ├── fruit_badge.dart
+│   │   ├── section_label.dart
+│   │   └── loading_skeleton.dart
+│   └── animations/
+│       ├── float_animation.dart
+│       ├── pulse_glow_animation.dart
+│       ├── fruit_appear_animation.dart
+│       ├── leaf_sway_animation.dart
+│       └── seed_fly_animation.dart
+└── l10n/
+    ├── app_en.arb
+    ├── app_de.arb
+    ├── app_fr.arb
+    └── [other languages]
+
+Add these dependencies to pubspec.yaml:
+- flutter_riverpod
+- go_router
+- supabase_flutter
+- rive
+- flutter_localizations
+- intl
+- flutter_svg
+- google_fonts
+- flutter_screenutil
+- shared_preferences
+- flutter_secure_storage
+- image_picker
+- url_launcher
+- share_plus
+- flutter_local_notifications
+- connectivity_plus
+- package_info_plus
+- fl_chart
+
+Create the main.dart with MaterialApp, theme configuration, and localization setup.`

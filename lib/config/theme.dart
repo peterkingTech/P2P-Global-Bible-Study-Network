@@ -56,6 +56,7 @@ abstract final class AppColors {
   static const Color progressTrack = Color(0xFFE3D9C2);
   static const Color progressFill = Color(0xFF1D9E75);
   static const Color sessionTrack = Color(0xFFE9E0CB);
+  static const Color darkBg = Color(0xFF06110D);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -175,7 +176,7 @@ ThemeData buildAppTheme() {
       ),
     ),
     dividerColor: AppColors.borderBeige,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: AppColors.lightCream,
       elevation: 0,
       shape: RoundedRectangleBorder(
