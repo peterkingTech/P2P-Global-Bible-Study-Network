@@ -8,31 +8,37 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/tree_provider.dart';
 import '../../../features/navigation/widgets/site_nav.dart';
 import '../../../features/living_tree/widgets/living_tree_widget.dart';
+import '../../../features/learn/screens/module_journey_screen.dart';
+import '../../../features/mentor/screens/mentor_dashboard.dart';
+import '../../../features/forest/screens/personal_forest_screen.dart';
+import '../../../features/upper_room/screens/root_prayer_screen.dart';
+import '../../../features/missions/screens/missions_hub.dart';
 import '../widgets/daily_verse_card.dart';
 import '../widgets/session_prompt_card.dart';
 import '../widgets/prayer_pulse_indicator.dart';
 
-/// The main home screen — shows the Living Tree, daily verse,
-/// session prompt, and prayer pulse.
+/// Shell screen — hosts the 6-tab bottom navigation.
+/// Tab order mirrors NavDestination enum:
+///   0 Home · 1 Learn · 2 Mentor · 3 Forest · 4 Upper Room · 5 Missions
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(currentUserProfileProvider);
-    final tree = ref.watch(myTreeProvider);
-
     return VineBranchesShell(
       pages: const [
         _HomeTab(),
-        // Remaining tabs are placeholders — wire to real screens
-        Center(child: Text('Learn')),
-        Center(child: Text('Forest')),
-        Center(child: Text('Upper Room')),
+        ModuleJourneyScreen(),
+        MentorDashboard(),
+        PersonalForestScreen(),
+        RootPrayerScreen(),
+        MissionsHub(),
       ],
     );
   }
 }
+
+// ── Home tab ──────────────────────────────────────────────────────────────────
 
 class _HomeTab extends ConsumerWidget {
   const _HomeTab();
@@ -47,7 +53,7 @@ class _HomeTab extends ConsumerWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // ── App bar ──────────────────────────────────────────────────
+            // ── Greeting ──────────────────────────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
@@ -78,7 +84,6 @@ class _HomeTab extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    // Prayer pulse dot
                     const PrayerPulseIndicator(),
                   ],
                 ),

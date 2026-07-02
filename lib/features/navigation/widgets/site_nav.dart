@@ -3,15 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/theme.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SiteNav — mirrors site-nav.tsx
-// Top app bar (header) + bottom navigation bar for mobile.
+// SiteNav — top app bar + bottom navigation bar
+// 6 tabs: Home · Learn · Mentor · Forest · Upper Room · Missions
 // ─────────────────────────────────────────────────────────────────────────────
 
 enum NavDestination {
-  journey,
-  globalForest,
-  peerSession,
+  home,
+  learn,
+  mentor,
+  forest,
   upperRoom,
+  missions,
 }
 
 class NavItem {
@@ -22,10 +24,12 @@ class NavItem {
 }
 
 const _kNavItems = [
-  NavItem('Journey', Icons.spa_outlined, NavDestination.journey),
-  NavItem('Global Forest', Icons.public_outlined, NavDestination.globalForest),
-  NavItem('Peer Session', Icons.menu_book_outlined, NavDestination.peerSession),
-  NavItem('Upper Room', Icons.local_fire_department_outlined, NavDestination.upperRoom),
+  NavItem('Home',       Icons.home_outlined,              NavDestination.home),
+  NavItem('Learn',      Icons.menu_book_outlined,         NavDestination.learn),
+  NavItem('Mentor',     Icons.people_outlined,            NavDestination.mentor),
+  NavItem('Forest',     Icons.park_outlined,              NavDestination.forest),
+  NavItem('Upper Room', Icons.whatshot_outlined,          NavDestination.upperRoom),
+  NavItem('Missions',   Icons.flag_outlined,              NavDestination.missions),
 ];
 
 // ── Top App Bar ───────────────────────────────────────────────────────────────
@@ -151,11 +155,12 @@ class _NavPill extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: isActive ? 8.w : 6.w,
+            vertical: 6.h,
+          ),
           decoration: BoxDecoration(
-            color: isActive
-                ? AppColors.lightGreen
-                : Colors.transparent,
+            color: isActive ? AppColors.lightGreen : Colors.transparent,
             borderRadius: BorderRadius.circular(999.r),
           ),
           child: Row(
@@ -164,16 +169,18 @@ class _NavPill extends StatelessWidget {
               Icon(
                 item.icon,
                 size: 16.sp,
-                color: isActive ? AppColors.navBg : AppColors.lightGreen.withOpacity(0.80),
+                color: isActive
+                    ? AppColors.navBg
+                    : AppColors.lightGreen.withOpacity(0.80),
               ),
               if (isActive) ...[
-                SizedBox(width: 5.w),
+                SizedBox(width: 4.w),
                 Text(
                   item.label,
                   style: TextStyle(
                     color: AppColors.navBg,
                     fontWeight: FontWeight.w600,
-                    fontSize: 11.sp,
+                    fontSize: 10.sp,
                   ),
                 ),
               ],
@@ -193,14 +200,15 @@ class VineBranchesShell extends StatefulWidget {
   final List<Widget> pages;
 
   const VineBranchesShell({super.key, required this.pages})
-      : assert(pages.length == 4, 'Provide exactly 4 pages (one per NavDestination)');
+      // Runtime guard: pages list must stay in sync with NavDestination enum.
+      : assert(pages.length == 6);
 
   @override
   State<VineBranchesShell> createState() => _VineBranchesShellState();
 }
 
 class _VineBranchesShellState extends State<VineBranchesShell> {
-  NavDestination _current = NavDestination.journey;
+  NavDestination _current = NavDestination.home;
 
   @override
   Widget build(BuildContext context) {
