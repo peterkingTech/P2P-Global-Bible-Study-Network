@@ -56,4 +56,29 @@ class CurriculumRepository {
       'updated_at': DateTime.now().toIso8601String(),
     });
   }
+
+  Future<void> updateLessonProgress({
+    required String userId,
+    required String lessonId,
+    required int percent,
+  }) async {
+    await _client.from('p2p_lesson_progress').upsert({
+      'user_id': userId,
+      'lesson_id': lessonId,
+      'progress_percent': percent,
+      'completed': percent >= 100,
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<int> getLessonProgress(String userId, String lessonId) async {
+    final res = await _client
+        .from('p2p_lesson_progress')
+        .select('progress_percent')
+        .eq('user_id', userId)
+        .eq('lesson_id', lessonId)
+        .maybeSingle();
+
+    return (res?['progress_percent'] as int?) ?? 0;
+  }
 }
