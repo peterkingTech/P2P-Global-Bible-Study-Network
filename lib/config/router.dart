@@ -32,6 +32,10 @@ import '../features/stubs/tree_ceremony_screen.dart';
 import '../features/stubs/active_session_screen.dart';
 import '../features/stubs/hall_of_faith_screen.dart';
 import '../features/stubs/mega_harvest_screen.dart';
+import '../features/curriculum/presentation/curriculum_screen.dart';
+import '../features/curriculum/presentation/module_screen.dart';
+import '../features/curriculum/presentation/lesson_screen.dart' as curriculum;
+import '../features/curriculum/presentation/lesson_reader_screen.dart';
 import 'routes.dart';
 
 // ── Auth-state listenable ─────────────────────────────────────────────────────
@@ -215,6 +219,33 @@ GoRouter _buildRouter() {
       GoRoute(
         path: Routes.hallOfFaith,
         builder: (_, __) => const HallOfFaithScreen(),
+      ),
+
+      // ── Curriculum ─────────────────────────────────────────────────────
+      GoRoute(
+        path: Routes.curriculum,
+        builder: (_, __) => const CurriculumScreen(),
+      ),
+      GoRoute(
+        path: Routes.curriculumModules,
+        builder: (_, state) {
+          final id = state.uri.queryParameters['id'] ?? '';
+          return ModuleScreen(curriculumId: id);
+        },
+      ),
+      GoRoute(
+        path: Routes.curriculumLessons,
+        builder: (_, state) {
+          final id = state.uri.queryParameters['id'] ?? '';
+          return curriculum.LessonScreen(moduleId: id);
+        },
+      ),
+      GoRoute(
+        path: Routes.curriculumReader,
+        builder: (_, state) {
+          final id = state.uri.queryParameters['id'] ?? '';
+          return LessonReaderScreen(lessonId: id);
+        },
       ),
 
       // ── Missions ───────────────────────────────────────────────────────

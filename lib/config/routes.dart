@@ -49,4 +49,10 @@ abstract final class Routes {
   static const missions = '/missions';
   static const weeklyChallenge = '/missions/challenge';
   static const megaHarvest = '/missions/harvest';
+
+  // ── Curriculum ────────────────────────────────────────────────────────────
+  static const curriculum = '/curriculum';           // list
+  static const curriculumModules = '/curriculum/modules';  // ?id=<curriculumId>
+  static const curriculumLessons = '/curriculum/lessons';  // ?id=<moduleId>
+  static const curriculumReader  = '/curriculum/reader';   // ?id=<lessonId>
 }
