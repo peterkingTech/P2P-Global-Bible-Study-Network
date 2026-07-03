@@ -101,12 +101,10 @@ class _WorldMapWidgetState extends State<WorldMapWidget>
       CurvedAnimation(parent: _breathe, curve: Curves.easeInOut),
     );
 
-    _points = kDisciples.map((d) {
-      final pct = _project(d.coordinates[0], d.coordinates[1]);
-      return _DisciplePoint(d: d, px: pct.dx, py: pct.dy);
-    }).toList();
-    _pointById = {for (final p in _points) p.d.id: p};
-    _edges = mentorEdges();
+    // Disciples are loaded from Supabase at runtime — map starts empty.
+    _points = [];
+    _pointById = {};
+    _edges = [];
   }
 
   @override

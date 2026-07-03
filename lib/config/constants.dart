@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 /// (store them in your CI/CD secrets, never hard-code in source control).
 abstract final class AppConstants {
   // ── Supabase ───────────────────────────────────────────────────────────────
-  /// Your Supabase project URL — injected at build time via --dart-define.
-  static const String supabaseUrl = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'https://omkqkasniakcnmfcwrvs.supabase.co',
-  );
+  /// Your Supabase project URL — e.g. "https://xxxx.supabase.co"
+  static const String supabaseUrl =
+      String.fromEnvironment('SUPABASE_URL', defaultValue: ' 'https://omkqkasniakcnmfcwrvs.supabase.co';');
 
-  /// Supabase anon/public key — injected at build time via --dart-define.
-  static const String supabaseAnonKey = String.fromEnvironment(
-    'SUPABASE_ANON_KEY',
-    defaultValue: '',
-  );
+  /// Supabase anon/public key
+                             static const String supabaseUrl =
+                                 String.fromEnvironment(
+                                   'SUPABASE_URL',
+                                   defaultValue: 'https://omkqkasniakcnmfcwrvs.supabase.co',
+                                 );             
 
   // ── Localisation ───────────────────────────────────────────────────────────
   static const List<Locale> supportedLocales = [
