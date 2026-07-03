@@ -9,13 +9,13 @@ import 'config/constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock to portrait on phones; allow landscape on tablets
+  // Lock portrait orientation
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Transparent status bar so the nav bar can bleed edge-to-edge
+  // Status bar styling
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -23,10 +23,10 @@ Future<void> main() async {
     ),
   );
 
-  // Supabase — replace placeholder values in constants.dart
+  // Initialize Supabase
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
-    anonKey: AppConstants.supabaseAnonKey, // ignore: deprecated_member_use
+    anonKey: AppConstants.supabaseAnonKey,
     authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
     ),
@@ -36,7 +36,8 @@ Future<void> main() async {
   );
 
   runApp(
-    // Wrap in ProviderScope so all Riverpod providers are accessible
-    const ProviderScope(child: VineAndBranchesApp()),
+    const ProviderScope(
+      child: VineAndBranchesApp(),
+    ),
   );
 }

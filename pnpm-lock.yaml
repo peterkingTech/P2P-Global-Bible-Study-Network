@@ -5348,3 +5348,9 @@ snapshots:
   yoctocolors@2.1.2: {}
 
   zod@3.25.76: {}
+
+dependencies:
+flutter:
+  sdk: flutter
+
+supabase_flutter: ^2.8.0
